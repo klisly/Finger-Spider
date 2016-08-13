@@ -1,2 +1,2 @@
-# Finger-Spider
+# FingerSpider
 Finger Spider
