@@ -11,6 +11,7 @@ acceptPre1 = "http://www.sanwen.com/quwen/"
 acceptPre2 = "http://www.sanwen.com/xiaohua/"
 acceptPre3 = "http://www.sanwen.com/lishigushi/"
 acceptPre4 = "http://www.lookmw.cn/"
+acceptPre5 = "http://m.meiwenting.com/"
 
 class XiaohuaPipeline(object):
     def __init__(self):
@@ -44,6 +45,8 @@ class MongoPipeline(object):
             item = "lishi";
         elif url.startswith(acceptPre4):
             item = "lookmw";
+        elif url.startswith(acceptPre5):
+            item = "meiwenting";
         return item;
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri

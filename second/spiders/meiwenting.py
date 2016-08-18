@@ -4,7 +4,6 @@ import os
 import scrapy
 from ..CommonUtil import  CommonUtil
 from ..items import XiaohuaItem, SanWenItem
-
 import time, datetime
 site = 'http://m.meiwenting.com'
 maxdepth = 100;
