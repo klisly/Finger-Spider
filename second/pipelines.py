@@ -12,9 +12,18 @@ acceptPre2 = "http://www.sanwen.com/xiaohua/"
 acceptPre3 = "http://www.sanwen.com/lishigushi/"
 acceptPre4 = "http://www.lookmw.cn/"
 
-class SanwenPipeline(object):
+class XiaohuaPipeline(object):
     def __init__(self):
         self.file = open('xiaohua.json', 'wb')
+
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item))
+        self.file.write(line)
+        self.file.write("\n\r")
+        return item
+class Meiwenting(object):
+    def __init__(self):
+        self.file = open('meiwenting.json', 'wb')
 
     def process_item(self, item, spider):
         line = json.dumps(dict(item))
