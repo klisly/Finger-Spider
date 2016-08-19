@@ -23,27 +23,27 @@ class SanwenSpider(scrapy.Spider):
     )
 
     def parse(self, response):
-        self.parseData(response)
-        # sel = Selector(response)
-        # count = 0;
-        # for link in sel.xpath('//a/@href').extract():
-        #     if link.startswith("/"):
-        #         link = site + link;
-        #     if link.startswith("www.lookmw.cn"):
-        #         link = "http://" + link;
-        #     if link.find(domain) != -1:
-        #         isContinue = True;
-        #     else:
-        #         isContinue = False;
-        #     fdep = util.getDep(response.url);
-        #     if fdep is None:
-        #         fdep = 1
-        #     if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-        #         util.saveUrl(link);
-        #         util.saveDep(link, fdep+1);
-        #         count += 1;
-        #         request = scrapy.Request(link, callback=self.parse_url_item)
-        #         yield request
+        # self.parseData(response)
+        sel = Selector(response)
+        count = 0;
+        for link in sel.xpath('//a/@href').extract():
+            if link.startswith("/"):
+                link = site + link;
+            if link.startswith("www.lookmw.cn"):
+                link = "http://" + link;
+            if link.find(domain) != -1:
+                isContinue = True;
+            else:
+                isContinue = False;
+            fdep = util.getDep(response.url);
+            if fdep is None:
+                fdep = 1
+            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
+                util.saveUrl(link);
+                util.saveDep(link, fdep+1);
+                count += 1;
+                request = scrapy.Request(link, callback=self.parse_url_item)
+                yield request
 
     def parse_url_item(self, response):
         sel = Selector(response)
