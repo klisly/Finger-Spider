@@ -125,7 +125,7 @@ class SanwenSpider(scrapy.Spider):
         #         readNum = ins;
         #     count = count + 1;
 
-        print belong,"\n",title,"\n",content,"\n",author
+        # print belong,"\n",title,"\n",content,"\n",author
         if (len(content) > 10):
             item = SanWenItem();
             item['url'] = url

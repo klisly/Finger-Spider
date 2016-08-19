@@ -49,7 +49,7 @@ class SanwenSpider(scrapy.Spider):
                 link = site + link;
             if link.startswith(domain):
                 link = "http://" + link;
-            if link.startswith(acceptPre):
+            if link.find(domain):
                 isContinue = True;
             else:
                 isContinue = False;
@@ -61,8 +61,10 @@ class SanwenSpider(scrapy.Spider):
                 util.saveDep(link, fdep + 1);
                 count += 1;
                 if link.find(".html") != -1 and link.find("page_") == -1:
+                    print "to spider data:"+link;
                     request = scrapy.Request(link, callback=self.parseData)
                 else:
+                    print "to parser link:" + link;
                     request = scrapy.Request(link, callback=self.parse_url_item)
                 yield request
 
@@ -123,8 +125,6 @@ class SanwenSpider(scrapy.Spider):
                 content = content + c;
         except Exception as e:
             pass;
-
-
 
         # print belong,"\ntitle:",title,"\ninfo:",info,"\ncontent:",content,"\nreadNum:",readNum,"\ndate:",date,"\n author:",author
         if (len(content) > 10):

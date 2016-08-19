@@ -14,8 +14,8 @@ class SanwenSpider(scrapy.Spider):
     name = "rensheng5"
     allowed_domains = ["rensheng5.com"]
     start_urls = (
-        # "http://www.rensheng5.com/",
-        "http://www.rensheng5.com/renshengganwu/id-138003.html",
+        "http://www.rensheng5.com/",
+        # "http://www.rensheng5.com/renshengganwu/id-138003.html",
      )
 
     def parse(self, response):
@@ -120,9 +120,7 @@ class SanwenSpider(scrapy.Spider):
         except Exception as e:
             pass;
 
-            # print "pos ",count," data:",ins;
-
-        print belong,"\n",title,"\n",info,"\n",content,"\n",readNum,"\n",date,"\n",author
+        # print belong,"\n",title,"\n",info,"\n",content,"\n",readNum,"\n",date,"\n",author
         if(len(content) > 10):
             item = SanWenItem();
             item['url'] = url

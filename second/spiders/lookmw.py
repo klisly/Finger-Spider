@@ -1,43 +1,49 @@
-#-*- coding:utf-8 –*-
+# -*- coding:utf-8 –*-
 from scrapy.selector import Selector
 import os
 import scrapy
-from ..CommonUtil import  CommonUtil
+from ..CommonUtil import CommonUtil
 from ..items import XiaohuaItem, SanWenItem
 
 import time, datetime
+
 site = 'http://www.lookmw.cn'
 maxdepth = 100;
 util = CommonUtil();
-acceptPre="http://www.lookmw.cn";
+domain = "lookmw.cn";
+acceptPre = "http://www.lookmw.cn";
+
+
 class SanwenSpider(scrapy.Spider):
     name = "lookmw"
     allowed_domains = ["lookmw.cn"]
     start_urls = (
         "http://www.lookmw.cn/",
-     )
+        # "http://www.lookmw.cn/jidian/110176.html",
+    )
 
     def parse(self, response):
-        sel = Selector(response)
-        count = 0;
-        for link in sel.xpath('//a/@href').extract():
-            if link.startswith("/"):
-                link = site + link;
-            if link.startswith("www.lookmw.cn"):
-                link = "http://" + link;
-            if link.startswith(acceptPre):
-                isContinue = True;
-            else:
-                isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep+1);
-                count += 1;
-                request = scrapy.Request(link, callback=self.parse_url_item)
-                yield request
+        self.parseData(response)
+        # sel = Selector(response)
+        # count = 0;
+        # for link in sel.xpath('//a/@href').extract():
+        #     if link.startswith("/"):
+        #         link = site + link;
+        #     if link.startswith("www.lookmw.cn"):
+        #         link = "http://" + link;
+        #     if link.find(domain) != -1:
+        #         isContinue = True;
+        #     else:
+        #         isContinue = False;
+        #     fdep = util.getDep(response.url);
+        #     if fdep is None:
+        #         fdep = 1
+        #     if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
+        #         util.saveUrl(link);
+        #         util.saveDep(link, fdep+1);
+        #         count += 1;
+        #         request = scrapy.Request(link, callback=self.parse_url_item)
+        #         yield request
 
     def parse_url_item(self, response):
         sel = Selector(response)
@@ -47,7 +53,7 @@ class SanwenSpider(scrapy.Spider):
                 link = site + link;
             if link.startswith("www.lookmw.cn"):
                 link = "http://" + link;
-            if link.startswith(acceptPre):
+            if link.find(domain) != -1:
                 isContinue = True;
             else:
                 isContinue = False;
@@ -67,7 +73,7 @@ class SanwenSpider(scrapy.Spider):
     def parse_item(self, response):
         try:
             if response.url.startswith(acceptPre):
-                item = self.parseSanwen(response);
+                item = self.parseData(response);
             return item
         except:
             return None
@@ -81,36 +87,34 @@ class SanwenSpider(scrapy.Spider):
         readNum = 0;
         content = "";
         try:
-            belong = sel.xpath('//div[@class="place"]/a/text()').extract();
+            belong = sel.xpath('//div[@class="atcpath"]/a/text()').extract();
         except Exception as e:
             pass;
         try:
-            title = sel.xpath('//div[@class="title"]/h2/text()').extract()[0];
+            title = sel.xpath('//h1/text()').extract()[0];
         except Exception as e:
             pass;
         try:
-            info = sel.xpath('//div[@class="info"]/text()').extract();
-            date = info[1].strip();
-            author = info[3];
+            author = sel.xpath('//div[@class="info"]/span/a/text()').extract()[0];
         except Exception as e:
             pass;
         try:
-            content = sel.xpath('//div[@class="content"]').extract()[0];
-            findex = content.find('<ul class="pagelist">');
-            content = content[:findex - 1] + "</div>";
+            content = sel.xpath('//article').extract()[0];
+            content = content[0:content.find('<ul class="diggts">')];
+            content = content + '</article>';
+            content = content.replace('src="/uploads/', 'src="http://www.lookmw.cn/uploads/');
         except Exception as e:
             pass;
 
-
-        # print belong,"\n",title,"\n",date,author,"\n",content
+        print belong, "\n", title, "\n", author, "\n", readNum, "\n", content
         if (len(content) > 10):
             item = SanWenItem();
             item['url'] = url
             item['belong'] = belong
             item['title'] = title
-            item['read'] = 0
+            item['read'] = readNum
             item['content'] = content
-            item['author']=author
+            item['author'] = author
             # ftime = time.strptime(date, "%Y-%m-%d %H:%M")
             # y, m, d = ftime[0:3]
             # item['publishAt'] = datetime.datetime(y, m, d);
@@ -121,4 +125,3 @@ class SanwenSpider(scrapy.Spider):
             item['publishAt'] = datetime.datetime(y, m, d, h, mi, s);
             item['checked'] = False;
             return item;
-
