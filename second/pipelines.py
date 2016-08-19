@@ -3,16 +3,20 @@
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+# See: doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import json
-acceptPre0 = "http://www.sanwen.com/sanwen/"
-acceptPre1 = "http://www.sanwen.com/quwen/"
-acceptPre2 = "http://www.sanwen.com/xiaohua/"
-acceptPre3 = "http://www.sanwen.com/lishigushi/"
-acceptPre4 = "http://www.lookmw.cn/"
-acceptPre5 = "http://m.meiwenting.com/"
-
+acceptPre0 = "sanwen.com/sanwen/"
+acceptPre1 = "sanwen.com/quwen/"
+acceptPre2 = "sanwen.com/xiaohua/"
+acceptPre3 = "sanwen.com/lishigushi/"
+acceptPre4 = "lookmw.cn/"
+acceptPre5 = "m.meiwenting.com/"
+acceptPre6 = "m.elanp.com";
+acceptPre7 = "jj59.com";
+acceptPre8 = "suibi8.com";
+acceptPre9 = "rensheng5.com";
+acceptPre10 = "sanwen.net";
 class XiaohuaPipeline(object):
     def __init__(self):
         self.file = open('xiaohua.json', 'wb')
@@ -35,18 +39,28 @@ class Meiwenting(object):
 class MongoPipeline(object):
 
     def getCollectionName(self, url):
-        if url.startswith(acceptPre0):
+        if url.find(acceptPre0) != -1:
             item = "sanwen";
-        elif url.startswith(acceptPre1):
+        elif url.find(acceptPre1) != -1:
             item = "quwen";
-        elif url.startswith(acceptPre2):
+        elif url.find(acceptPre2) != -1:
             item = "xiaohua";
-        elif url.startswith(acceptPre3):
+        elif url.find(acceptPre3) != -1:
             item = "lishi";
-        elif url.startswith(acceptPre4):
+        elif url.find(acceptPre4) != -1:
             item = "lookmw";
-        elif url.startswith(acceptPre5):
+        elif url.find(acceptPre5) != -1:
             item = "meiwenting";
+        elif url.find(acceptPre6) != -1:
+            item = "elanp";
+        elif url.find(acceptPre7) != -1:
+            item = "jj59";
+        elif url.find(acceptPre8) != -1:
+            item = "suibi8";
+        elif url.find(acceptPre9) != -1:
+            item = "rensheng5";
+        elif url.find(acceptPre10) != -1:
+            item = "sanwennet";
         return item;
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri

@@ -152,12 +152,13 @@ class SanwenSpider(scrapy.Spider):
         item['title'] = title
         item['read'] = readnum
         item['content'] = content
-        ftime = time.strptime(date, "%Y-%m-%d")
-        y, m, d = ftime[0:3]
-        item['publishAt'] = datetime.datetime(y, m, d);
+        # ftime = time.strptime(date, "%Y-%m-%d")
+        # y, m, d = ftime[0:3]
+        # item['publishAt'] = datetime.datetime(y, m, d);
         ftime = time.localtime()
         y, m, d, h, mi, s = ftime[0:6]
         item['createAt'] = datetime.datetime(y, m, d, h, mi, s);
         item['updateAt'] = datetime.datetime(y, m, d, h, mi, s);
+        item['publishAt'] = datetime.datetime(y, m, d, h, mi, s);
         item['checked'] = False;
         return item;
