@@ -2,13 +2,13 @@
 from scrapy.selector import Selector
 import os
 import scrapy
-from ..CommonUtil import  CommonUtil
-from ..items import XiaohuaItem, SanWenItem
+from ..items import  SanWenItem
 import time, datetime
-site = 'http://m.elanp.com'
-maxdepth = 100;
+from ..CommonUtil import  CommonUtil
 util = CommonUtil();
+site = 'http://m.elanp.com'
 domain = "m.elanp.com";
+
 acceptPre="http://m.elanp.com";
 class SanwenSpider(scrapy.Spider):
     name = "elanp"
@@ -21,49 +21,29 @@ class SanwenSpider(scrapy.Spider):
     def parse(self, response):
         # self.parse_item(response);
         sel = Selector(response)
-        count = 0;
         for link in sel.xpath('//a/@href').extract():
             if link.startswith("/"):
                 link = site + link;
             if link.startswith(domain):
                 link = "http://" + link;
-            if link.startswith(acceptPre):
-                isContinue = True;
-            else:
-                isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep+1);
-                count += 1;
-                request = scrapy.Request(link, callback=self.parse_url_item)
-                yield request
+            request = scrapy.Request(link, callback=self.parse_url_item)
+            yield request
 
     def parse_url_item(self, response):
         sel = Selector(response)
-        count = 0;
         for link in sel.xpath('//a/@href').extract():
             if link.startswith("/"):
                 link = site + link;
             if link.startswith(domain):
                 link = "http://" + link;
-            if link.startswith(acceptPre):
-                isContinue = True;
-            else:
-                isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep + 1);
-                count += 1;
-                if link.find(".html") != -1 and link.find("list") == -1:
+
+            if link.find(".html") != -1 and link.find("list") == -1:
+                if(util.get(link) is None):
+                    util.saveUrl(link)
                     request = scrapy.Request(link, callback=self.parseData)
-                else:
-                    request = scrapy.Request(link, callback=self.parse_url_item)
+                    yield request
+            else:
+                request = scrapy.Request(link, callback=self.parse_url_item)
                 yield request
 
     def parse_item(self, response):
@@ -124,11 +104,11 @@ class SanwenSpider(scrapy.Spider):
             # ftime = time.strptime(date, "%Y/%m/%d")
             # y, m, d = ftime[0:3]
             # item['publishAt'] = datetime.datetime(y, m, d);
-            ftime = time.localtime();
-            y, m, d, h, mi, s = ftime[0:6]
-            item['createAt'] = datetime.datetime(y, m, d, h, mi, s);
-            item['updateAt'] = datetime.datetime(y, m, d, h, mi, s);
-            item['publishAt'] = datetime.datetime(y, m, d, h, mi, s);
+            # ftime = time.localtime();
+            # y, m, d, h, mi, s = ftime[0:6]
+            # item['createAt'] = datetime.datetime(y, m, d, h, mi, s);
+            # item['updateAt'] = datetime.datetime(y, m, d, h, mi, s);
+            # item['publishAt'] = datetime.datetime(y, m, d, h, mi, s);
             item['checked'] = False;
             return item;
 

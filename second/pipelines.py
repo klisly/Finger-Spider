@@ -6,6 +6,7 @@
 # See: doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import json
+from bson import json_util
 acceptPre0 = "sanwen.com/sanwen/"
 acceptPre1 = "sanwen.com/quwen/"
 acceptPre2 = "sanwen.com/xiaohua/"
@@ -17,23 +18,50 @@ acceptPre7 = "jj59.com";
 acceptPre8 = "suibi8.com";
 acceptPre9 = "rensheng5.com";
 acceptPre10 = "sanwen.net";
-class XiaohuaPipeline(object):
+class FilePipeline(object):
     def __init__(self):
-        self.file = open('xiaohua.json', 'wb')
+        self.sanwenFile = open('sanwen.json', 'a')
+        self.quwenFile = open('quwen.json', 'a')
+        self.xiaohuaFile = open('xiaohua.json', 'a')
+        self.lishiFile = open('lishi.json', 'a')
+        self.lookmwFile = open('lookmw.json', 'a')
+        self.meiwentingFile = open('meiwenting.json', 'a')
+        self.elanpFile = open('elanp.json', 'a')
+        self.jj59File = open('jj59.json', 'a')
+        self.suibi8File = open('suibi8.json', 'a')
+        self.rensheng5File = open('rensheng5.json', 'a')
+        self.sanwennetFile = open('sanwennet.json', 'a')
 
-    def process_item(self, item, spider):
-        line = json.dumps(dict(item))
-        self.file.write(line)
-        self.file.write("\n\r")
-        return item
-class Meiwenting(object):
-    def __init__(self):
-        self.file = open('meiwenting.json', 'wb')
 
+    def getFile(self, url):
+        if url.find(acceptPre0) != -1:
+            item = self.sanwenFile;
+        elif url.find(acceptPre1) != -1:
+            item = self.quwenFile;
+        elif url.find(acceptPre2) != -1:
+            item = self.xiaohuaFile;
+        elif url.find(acceptPre3) != -1:
+            item = self.lishiFile;
+        elif url.find(acceptPre4) != -1:
+            item = self.lookmwFile;
+        elif url.find(acceptPre5) != -1:
+            item = self.meiwentingFile;
+        elif url.find(acceptPre6) != -1:
+            item = self.elanpFile;
+        elif url.find(acceptPre7) != -1:
+            item = self.jj59File;
+        elif url.find(acceptPre8) != -1:
+            item = self.suibi8File;
+        elif url.find(acceptPre9) != -1:
+            item = self.rensheng5File;
+        elif url.find(acceptPre10) != -1:
+            item = self.sanwennetFile;
+        return item;
     def process_item(self, item, spider):
-        line = json.dumps(dict(item))
-        self.file.write(line)
-        self.file.write("\n\r")
+        line = json.dumps(dict(item), default=json_util.default)
+        file = self.getFile(item["url"])
+        file.write(line)
+        file.write("\n\r")
         return item
 
 class MongoPipeline(object):

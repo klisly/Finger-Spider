@@ -30,6 +30,7 @@ class SanwenSpider(scrapy.Spider):
                 isContinue = True;
             else:
                 isContinue = False;
+
             fdep = util.getDep(response.url);
             if fdep is None:
                 fdep = 1

@@ -2,17 +2,17 @@
 from scrapy.selector import Selector
 import os
 import scrapy
-from ..CommonUtil import  CommonUtil
 from ..items import SanWenItem
 import time, datetime
+
+from ..CommonUtil import  CommonUtil
+util = CommonUtil();
 site = 'http://www.sanwen.com'
 acceptPre0 = "http://www.sanwen.com/sanwen/"
 acceptPre1 = "http://www.sanwen.com/quwen/"
 acceptPre3 = "http://www.sanwen.com/lishigushi/"
 
 filedir="sanwen"
-maxdepth = 10;
-util = CommonUtil();
 class SanwenSpider(scrapy.Spider):
     name = "sanwen"
     allowed_domains = ["sanwen.com"]
@@ -34,13 +34,8 @@ class SanwenSpider(scrapy.Spider):
                 isContinue = True;
             else:
                 isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep+1);
-                count += 1;
+
+            if isContinue:
                 request = scrapy.Request(link, callback=self.parse_url_item)
                 yield request
 
@@ -56,18 +51,17 @@ class SanwenSpider(scrapy.Spider):
                 isContinue = True;
             else:
                 isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep + 1);
-                count += 1;
+
+            if isContinue :
                 if link.find(".html") != -1 and link.find("list") == -1:
-                    request = scrapy.Request(link, callback=self.parse_item)
+                    if (util.get(link) is None):
+                        util.saveUrl(link)
+                        request = scrapy.Request(link, callback=self.parse_item)
+                        yield request
                 else:
                     request = scrapy.Request(link, callback=self.parse_url_item)
-                yield request
+                    yield request
+
 
     def parse_item(self, response):
         try:

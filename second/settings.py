@@ -52,7 +52,7 @@ CONCURRENT_REQUESTS=32
 #DOWNLOADER_MIDDLEWARES = {
 #    'second.middlewares.MyCustomDownloaderMiddleware': 543,
 #}
-
+DEPTH_LIMIT=2
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -62,7 +62,7 @@ CONCURRENT_REQUESTS=32
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'second.pipelines.MongoPipeline': 300,
+   'second.pipelines.FilePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

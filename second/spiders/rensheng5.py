@@ -2,12 +2,12 @@
 from scrapy.selector import Selector
 import os
 import scrapy
-from ..CommonUtil import  CommonUtil
-from ..items import XiaohuaItem, SanWenItem
+from ..items import SanWenItem
 import time, datetime
-site = 'http://www.rensheng5.com'
-maxdepth = 100;
+
+from ..CommonUtil import  CommonUtil
 util = CommonUtil();
+site = 'http://www.rensheng5.com'
 domain = "www.rensheng5.com/";
 acceptPre="http://www.rensheng5.com";
 class SanwenSpider(scrapy.Spider):
@@ -21,7 +21,6 @@ class SanwenSpider(scrapy.Spider):
     def parse(self, response):
         # self.parse_item(response);
         sel = Selector(response)
-        count = 0;
         for link in sel.xpath('//a/@href').extract():
             if link.startswith("/"):
                 link = site + link;
@@ -31,19 +30,13 @@ class SanwenSpider(scrapy.Spider):
                 isContinue = True;
             else:
                 isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep+1);
-                count += 1;
+
+            if isContinue :
                 request = scrapy.Request(link, callback=self.parse_url_item)
                 yield request
 
     def parse_url_item(self, response):
         sel = Selector(response)
-        count = 0;
         for link in sel.xpath('//a/@href').extract():
             if link.startswith("/"):
                 link = site + link;
@@ -53,18 +46,17 @@ class SanwenSpider(scrapy.Spider):
                 isContinue = True;
             else:
                 isContinue = False;
-            fdep = util.getDep(response.url);
-            if fdep is None:
-                fdep = 1
-            if isContinue and not util.hasUrl(link) and fdep <= maxdepth:
-                util.saveUrl(link);
-                util.saveDep(link, fdep + 1);
-                count += 1;
+
+            if isContinue:
                 if link.find(".html") != -1 and (link.find("list") == -1 or link.find("index") == -1):
-                    request = scrapy.Request(link, callback=self.parseData)
+                    if (util.get(link) is None):
+                        util.saveUrl(link)
+                        request = scrapy.Request(link, callback=self.parseData)
+                        yield request
                 else:
                     request = scrapy.Request(link, callback=self.parse_url_item)
-                yield request
+                    yield request
+
 
     def parse_item(self, response):
         try:
