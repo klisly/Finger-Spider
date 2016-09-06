@@ -20,17 +20,18 @@ acceptPre9 = "rensheng5.com";
 acceptPre10 = "sanwen.net";
 class FilePipeline(object):
     def __init__(self):
-        self.sanwenFile = open('sanwen.json', 'a')
-        self.quwenFile = open('quwen.json', 'a')
-        self.xiaohuaFile = open('xiaohua.json', 'a')
-        self.lishiFile = open('lishi.json', 'a')
-        self.lookmwFile = open('lookmw.json', 'a')
-        self.meiwentingFile = open('meiwenting.json', 'a')
-        self.elanpFile = open('elanp.json', 'a')
-        self.jj59File = open('jj59.json', 'a')
-        self.suibi8File = open('suibi8.json', 'a')
-        self.rensheng5File = open('rensheng5.json', 'a')
-        self.sanwennetFile = open('sanwennet.json', 'a')
+        dir = "/Users/wizardholy/data/";
+        self.sanwenFile = open(dir+'sanwen.json', 'a')
+        self.quwenFile = open(dir+'quwen.json', 'a')
+        self.xiaohuaFile = open(dir+'xiaohua.json', 'a')
+        self.lishiFile = open(dir+'lishi.json', 'a')
+        self.lookmwFile = open(dir+'lookmw.json', 'a')
+        self.meiwentingFile = open(dir+'meiwenting.json', 'a')
+        self.elanpFile = open(dir+'elanp.json', 'a')
+        self.jj59File = open(dir+'jj59.json', 'a')
+        self.suibi8File = open(dir+'suibi8.json', 'a')
+        self.rensheng5File = open(dir+'rensheng5.json', 'a')
+        self.sanwennetFile = open(dir+'sanwennet.json', 'a')
 
 
     def getFile(self, url):
