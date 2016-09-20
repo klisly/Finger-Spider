@@ -52,7 +52,7 @@ CONCURRENT_REQUESTS=32
 #DOWNLOADER_MIDDLEWARES = {
 #    'second.middlewares.MyCustomDownloaderMiddleware': 543,
 #}
-DEPTH_LIMIT=2
+DEPTH_LIMIT=3
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 #EXTENSIONS = {

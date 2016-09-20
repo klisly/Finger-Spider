@@ -16,11 +16,10 @@ class SanwenSpider(scrapy.Spider):
     allowed_domains = ["m.meiwenting.com"]
     start_urls = (
         "http://m.meiwenting.com/",
-        # "http://m.meiwenting.com/a/201401/46433.html",
+        # "http://m.meiwenting.com/a/201609/100588.html",
      )
 
     def parse(self, response):
-        # self.parse_item(response);
         sel = Selector(response)
         for link in sel.xpath('//a/@href').extract():
             if link.startswith("/"):
@@ -123,6 +122,9 @@ class SanwenSpider(scrapy.Spider):
             pass;
         try:
             content = sel.xpath('//div[@class="article-content"]').extract()[0];
+            index = content.find("<center")
+            content = content[0:index];
+            content = content+"</div>";
         except Exception as e:
             pass;
         # print belong,"\n",title,"\n",info,"\n",content,"\n",readNum,"\n",date,"\n",author
@@ -143,6 +145,5 @@ class SanwenSpider(scrapy.Spider):
             item['updateAt'] = datetime.datetime(y, m, d, h, mi, s);
             item['publishAt'] = datetime.datetime(y, m, d, h, mi, s);
             item['checked'] = False;
-            # print item
             return item;
 
